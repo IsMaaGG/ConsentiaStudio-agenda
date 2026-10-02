@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="consentia-agenda-version" content="1.8.0">
-<meta name="consentia-agenda-firma" content="yQyobOi3DESRJyPaZ7dYDS9RbZU4ERBKn61Ye2nvBQcA+vbhO4Y8WmZpfCbsh0hhcxQK2o3X6z/YtMVwB6bvBQ==">
+<meta name="consentia-agenda-version" content="1.8.1">
+<meta name="consentia-agenda-firma" content="Ys8t57BosDnAeEOey3SsD97W2o0t+Q8CW+n2bZlmGwBphZ40jsQzMD7rpTmt/+6LFCnSGXXUS9S86iXBRqWnCQ==">
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-aRp4D6hPFb1cSNDBYl5iVBGbUtByCl8jdoqsl3losyk='; connect-src https://api.github.com https://raw.githubusercontent.com; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-hqXY3M2RtWoDGRRpKM9keHtbJ6XeJFv6EBsUXt8tfn8='; connect-src https://api.github.com https://raw.githubusercontent.com; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#111113">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Agenda · Consentía Studio</title>
@@ -55,7 +55,7 @@ main{padding:10px 12px 40px;max-width:720px;margin:0 auto}
 .status{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin:8px 0}
 .status span{flex:1;min-width:0}
 .status button{flex:none;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:4px;padding:5px 9px;font:inherit;font-size:12px;font-weight:700}
-.status button.lnk{border:0;background:none;padding:0;text-decoration:underline;font-weight:700}
+.status button.lnk,.warn button.lnk{border:0;background:none;padding:0;text-decoration:underline;font-weight:700;font:inherit;font-weight:700;color:inherit}
 /* Vista en columnas, como la agenda del programa: una columna por trabajadora y las horas hacia abajo. */
 main.wide{max-width:none;padding:0}
 main.wide .warn,main.wide .bad{margin:8px 12px}
@@ -88,6 +88,7 @@ main.wide .status{margin:6px 12px}
 .sheetBack{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(17,17,19,.45);z-index:20;display:flex;align-items:flex-end}
 .sheet{background:#fff;width:100%;max-height:72vh;overflow:auto;border-radius:12px 12px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom))}
 .sheet h2{margin:2px 0;font-size:19px}
+@media (min-width:720px){.sheetBack{align-items:center;justify-content:center}.sheet{max-width:440px;border-radius:12px;padding-bottom:18px}}
 .sheet .h{font:700 13px ui-monospace,Consolas,monospace;color:#56534e}
 .sheet p{margin:8px 0 0}
 .sheet .who{color:var(--muted);font-size:13px}
@@ -103,6 +104,7 @@ main.wide .status{margin:6px 12px}
   'use strict';
   var FORMAT = 'consentia-agenda-1', MIN_ITER = 100000, MAX_ITER = 5000000, BR_RE = /^agenda-[0-9a-f]{16,64}$/, SHA_RE = /^[0-9a-f]{40,64}$/, LS_BR = 'consentia-agenda-ramas', LS_VW = 'consentia-agenda-vista';
   var PX = 1.2, COL_W = 112, TIME_W = 42; // píxeles por minuto, ancho mínimo de cada columna y de la columna de las horas
+  var PAGE_V = (document.querySelector('meta[name="consentia-agenda-version"]') || {}).content || '', SS_RL = 'consentia-agenda-recarga';
   var app = document.getElementById('app');
   // Repositorio: https://USUARIO.github.io/REPOSITORIO/ (o ?repo=usuario/nombre solo en este ordenador, para pruebas).
   var cfg = (function () {
@@ -115,7 +117,7 @@ main.wide .status{margin:6px 12px}
   try { if (navigator.serviceWorker) navigator.serviceWorker.getRegistrations().then(function (rs) { var here = location.origin + '/' + (location.pathname.split('/').filter(Boolean)[0] || '') + '/'; rs.forEach(function (r) { if (r.scope === location.origin + '/' || r.scope.indexOf(here) === 0) r.unregister(); }); }).catch(function () { }); } catch (e) { }
   // pws: contraseñas escritas en esta visita (solo en memoria). keys: claves ya calculadas (por sal); con
   // «Recordar» se guardan en este navegador como claves NO exportables: la contraseña nunca se guarda.
-  var st = { pws: [], keys: {}, remember: false, branches: [], centers: [], cur: 0, day: today(), msg: '', bad: '', loading: false, ready: false, lastCheck: null, cached: false, view: 'cols', scroll: null };
+  var st = { pws: [], keys: {}, remember: false, branches: [], centers: [], cur: 0, day: today(), msg: '', bad: '', loading: false, ready: false, lastCheck: null, cached: false, view: 'cols', scroll: null, stale: '', fresh: '' };
   try { if (localStorage.getItem(LS_VW) === 'lista') st.view = 'lista'; } catch (e) { }
 
   /* ---------- claves guardadas en el navegador (IndexedDB) ---------- */
@@ -184,6 +186,26 @@ main.wide .status{margin:6px 12px}
     document.body.appendChild(back);
   }
   function apptSheet(a, who) { sheet([el('div', { class: 'h', text: txt(a.s, 5) + '–' + txt(a.e, 5) }), el('h2', {}, [txt(a.c, 80) || 'Sin clienta', stateTag(a)]), el('div', { class: 'who', text: who }), a.sv ? el('p', { text: txt(a.sv, 200) }) : null]); }
+  /* ---------- que ningún aparato se quede con una página antigua ---------- */
+  // Cada agenda dice con qué versión del programa se publicó. Si alguna es más nueva que esta página, es que en
+  // GitHub ya hay una página más nueva y este navegador enseña una guardada (o la pestaña lleva días abierta):
+  // se recarga sola, una vez por versión. Si GitHub todavía sirve la antigua, se avisa y se puede recargar a mano.
+  function ver(v) { var m = /^(\d+)\.(\d+)\.(\d+)$/.exec(String(v || '')); return m ? [+m[1], +m[2], +m[3]] : null; }
+  function newer(a, b) { var x = ver(a), y = ver(b); if (!x || !y) return false; for (var i = 0; i < 3; i++) if (x[i] !== y[i]) return x[i] > y[i]; return false; }
+  function reloadPage(v) { location.replace(location.pathname + '?v=' + encodeURIComponent(v) + '-' + Date.now().toString(36)); }
+  function pageCheck() {
+    var top = PAGE_V; st.centers.forEach(function (c) { if (c.data && newer(c.data.version, top)) top = String(c.data.version); });
+    if (top === PAGE_V) { st.stale = ''; return false; }
+    st.stale = top;
+    try {
+      var p = (sessionStorage.getItem(SS_RL) || '').split('|');
+      if (p[0] === top && Date.now() - (+p[1] || 0) < 15 * 60000) return false; // ya se ha probado hace poco: GitHub aún no la tiene lista
+      sessionStorage.setItem(SS_RL, top + '|' + Date.now());
+    } catch (e) { return false; }
+    reloadPage(top); return true;
+  }
+  try { var rl = (sessionStorage.getItem(SS_RL) || '').split('|'); if (rl[0] && rl[0] === PAGE_V && Date.now() - (+rl[1] || 0) < 120000) st.fresh = PAGE_V; } catch (e) { }
+  function staleNote() { return st.stale ? el('div', { class: 'warn', id: 'vieja' }, ['Hay una versión más nueva de esta página (' + st.stale + '). ', el('button', { class: 'lnk', text: 'Recargar', on: { click: function () { reloadPage(st.stale); } } })]) : null; }
   function fitGrid() { var g = app.querySelector('.gw'); if (g) g.style.height = Math.max(260, window.innerHeight - g.getBoundingClientRect().top) + 'px'; }
 
   function kdfOf(file) {
@@ -247,6 +269,7 @@ main.wide .status{margin:6px 12px}
       var at = out.findIndex(function (c) { return c.key === was; });
       if (at < 0 || !out[at].data) at = Math.max(0, out.findIndex(function (c) { return c.data; })); // se queda en el centro que se estaba viendo
       st.centers = out; st.cached = !!l.cached; st.cur = at;
+      if (pageCheck()) return; // hay una página más nueva: se está recargando
       st.msg = out.length ? '' : 'Todavía no hay ninguna agenda publicada. Se publica desde el programa: Ajustes → Agenda en el móvil.';
     } catch (e) {
       st.msg = e.limit ? 'GitHub limita las consultas seguidas desde esta conexión. Espera unos minutos y vuelve a intentarlo.' : 'No se ha podido descargar la agenda (¿hay Internet?). Se volverá a intentar.';
@@ -278,7 +301,8 @@ main.wide .status{margin:6px 12px}
       var go = function () { login(inp.value, rem.checked); };
       btn.addEventListener('click', go); inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
       app.appendChild(el('div', { class: 'login' }, [el('h1', { text: 'Consentía Studio' }), el('p', { text: 'Agenda de los centros. Escribe la contraseña de la agenda: se descifra aquí, en este móvil, y no se envía a ningún sitio.' }), inp,
-        el('label', {}, [rem, 'Recordar en este móvil (quien lo use verá la agenda)']), btn, st.bad ? el('div', { class: 'bad', text: st.bad }) : null, st.msg ? el('div', { class: 'warn', text: st.msg }) : null]));
+        el('label', {}, [rem, 'Recordar en este móvil (quien lo use verá la agenda)']), btn, st.bad ? el('div', { class: 'bad', text: st.bad }) : null, st.msg ? el('div', { class: 'warn', text: st.msg }) : null,
+        st.fresh && !creds ? el('div', { class: 'warn', id: 'nueva', text: 'La página se ha actualizado (versión ' + st.fresh + '). Escribe la contraseña otra vez.' }) : null]));
       setTimeout(function () { inp.focus(); }, 50);
       return;
     }
@@ -289,6 +313,7 @@ main.wide .status{margin:6px 12px}
     app.appendChild(el('div', { class: 'days' }, [el('button', { text: '‹', title: 'Día anterior', on: { click: function () { st.day = addDays(st.day, -1); render(); } } }), el('div', { class: 'd', text: longDay(st.day) }), el('button', { text: '›', title: 'Día siguiente', on: { click: function () { st.day = addDays(st.day, 1); render(); } } }), st.day !== today() ? el('button', { class: 'hoy', text: 'Hoy', on: { click: function () { st.day = today(); render(); } } }) : null]));
     var main = el('main');
     if (st.msg) main.appendChild(el('div', { class: 'warn', text: st.msg }));
+    if (st.stale) main.appendChild(staleNote());
     if (!c) { main.appendChild(el('div', { class: 'none', text: st.loading ? 'Cargando…' : 'No hay agendas publicadas.' })); app.appendChild(main); return; }
     if (!c.data) {
       var oi = el('input', { type: 'password', placeholder: 'Contraseña de este centro' });
@@ -390,6 +415,7 @@ main.wide .status{margin:6px 12px}
   });
   setInterval(function () { if ((st.pws.length || Object.keys(st.keys).length) && !document.hidden) refresh(); }, 5 * 60 * 1000);
   window.addEventListener('resize', fitGrid);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var b = document.querySelector('.sheetBack'); if (b) b.remove(); } });
   document.addEventListener('visibilitychange', function () { if (!document.hidden && (st.pws.length || Object.keys(st.keys).length) && (!st.lastCheck || Date.now() - Date.parse(st.lastCheck) > 60000)) refresh(); });
 })();
 </script>
