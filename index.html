@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="consentia-agenda-version" content="1.7.0">
+<meta name="consentia-agenda-firma" content="qZaGKjAypQtRwfIrFsNN8oKdmNTgjgi7ldyNrTa0vsT8ubV/nuAXsNwLjnxuzAsRGkzn9oiRFXSE51hi/w48DA==">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-8/zgtzq26MWPdcLydZyd9q1Rz6DAhzguPXJu9jMZGUY='; connect-src https://api.github.com https://raw.githubusercontent.com; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="theme-color" content="#111113">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Agenda · Consentía Studio</title>
+<!-- Consentía Studio · agenda en el móvil (solo consulta).
+     Las agendas están cifradas: esta página las descarga de GitHub y las descifra AQUÍ, en el navegador,
+     con la contraseña que escribes. La contraseña no se envía a ningún sitio. -->
+<style>
+:root{--ink:#111113;--pink:#ff2b91;--muted:#77736c;--line:#e4e0d8;--bg:#f4f2ee;--good:#1d8a4a}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.35 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;position:sticky;top:0;z-index:5}
+header .t{display:flex;align-items:center;justify-content:space-between;gap:8px}
+header b{letter-spacing:.14em;font-size:13px;text-transform:uppercase}
+header button{background:transparent;color:#fff;border:1px solid #444;border-radius:4px;padding:6px 10px;font:inherit;font-size:12px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-top:10px}
+.tabs button{flex:none;background:#26262a;color:#ddd;border:0;border-radius:16px;padding:6px 12px;font:inherit;font-size:13px}
+.tabs button.on{background:var(--pink);color:#fff}
+.days{display:flex;align-items:center;gap:8px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:var(--hh,56px);z-index:4}
+.days button{background:#fff;border:1px solid var(--line);border-radius:4px;min-width:40px;height:36px;font:inherit;font-size:16px}
+.days .d{flex:1;text-align:center;font-weight:700}
+.days .hoy{font-size:12px;min-width:auto;padding:0 10px}
+main{padding:10px 12px 40px;max-width:720px;margin:0 auto}
+.emp{background:#fff;border:1px solid var(--line);border-radius:6px;margin:10px 0;overflow:hidden}
+.emp h3{margin:0;padding:9px 12px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.it{display:flex;gap:10px;padding:9px 12px;border-bottom:1px solid #f0ede7;border-left:4px solid var(--c,#999)}
+.it:last-child{border-bottom:0}
+.it .h{font:700 13px ui-monospace,Consolas,monospace;white-space:nowrap;min-width:92px}
+.it .w b{display:block}.it .w small{color:var(--muted)}
+.it.x{opacity:.5}.it.x b{text-decoration:line-through}
+.tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:3px;margin-left:4px;vertical-align:1px}
+.tag.c{background:#e3f4e9;color:var(--good)}.tag.x{background:#eee;color:#555}.tag.n{background:#fde4ec;color:#a3164c}
+.blk{background:repeating-linear-gradient(135deg,#111 0 7px,#2b2b2b 7px 14px);color:#fff;border-left-color:#000}
+.blk .w b{text-transform:uppercase;letter-spacing:.1em}
+.none{color:var(--muted);padding:10px 12px;font-size:13px}
+.note{font-size:12px;color:var(--muted);text-align:center;margin:14px 0}
+.warn{background:#fff4d6;border:1px solid #ecd18c;color:#5c3d00;border-radius:6px;padding:10px 12px;margin:10px 0;font-size:13px}
+.bad{background:#fde4ec;border:1px solid #eeb3c4;color:#6d0a28;border-radius:6px;padding:10px 12px;margin:10px 0;font-size:13px}
+.login{max-width:380px;margin:12vh auto 0;padding:24px 20px;background:#fff;border:1px solid var(--line);border-radius:8px}
+.login h1{font-size:20px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4px}
+.login p{color:var(--muted);font-size:13px;margin:0 0 16px}
+.login input[type=password]{width:100%;font:inherit;font-size:17px;padding:12px;border:1px solid #bdb9b1;border-radius:6px}
+.login label{display:flex;gap:8px;align-items:center;font-size:13px;margin:12px 0;color:#444}
+.login button{width:100%;background:var(--pink);color:#fff;border:0;border-radius:6px;padding:13px;font:inherit;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.login button[disabled]{opacity:.6}
+.other{display:flex;gap:6px;margin-top:8px}.other input{flex:1;font:inherit;padding:8px;border:1px solid #bdb9b1;border-radius:4px}.other button{border:0;background:var(--ink);color:#fff;border-radius:4px;padding:0 12px;font:inherit}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function () {
+  'use strict';
+  var FORMAT = 'consentia-agenda-1', MIN_ITER = 100000, MAX_ITER = 5000000, BR_RE = /^agenda-[0-9a-f]{16,64}$/, SHA_RE = /^[0-9a-f]{40,64}$/, LS_BR = 'consentia-agenda-ramas';
+  var app = document.getElementById('app');
+  // Repositorio: https://USUARIO.github.io/REPOSITORIO/ (o ?repo=usuario/nombre solo en este ordenador, para pruebas).
+  var cfg = (function () {
+    var q = new URLSearchParams(location.search), h = location.hostname, seg = location.pathname.split('/').filter(Boolean);
+    if (/\.github\.io$/i.test(h) && seg.length) return { repo: h.split('.')[0] + '/' + seg[0], api: 'https://api.github.com', raw: 'https://raw.githubusercontent.com' };
+    if (h !== 'localhost' && h !== '127.0.0.1') return { repo: '', api: '', raw: '' };
+    return { repo: q.get('repo') || '', api: q.get('api') || 'https://api.github.com', raw: q.get('raw') || 'https://raw.githubusercontent.com' };
+  })();
+  // Esta página nunca usa «service workers»: si alguien hubiera instalado uno, se quita.
+  try { if (navigator.serviceWorker) navigator.serviceWorker.getRegistrations().then(function (rs) { var here = location.origin + '/' + (location.pathname.split('/').filter(Boolean)[0] || '') + '/'; rs.forEach(function (r) { if (r.scope === location.origin + '/' || r.scope.indexOf(here) === 0) r.unregister(); }); }).catch(function () { }); } catch (e) { }
+  // pws: contraseñas escritas en esta visita (solo en memoria). keys: claves ya calculadas (por sal); con
+  // «Recordar» se guardan en este navegador como claves NO exportables: la contraseña nunca se guarda.
+  var st = { pws: [], keys: {}, remember: false, branches: [], centers: [], cur: 0, day: today(), msg: '', bad: '', loading: false, ready: false, lastCheck: null, cached: false };
+
+  /* ---------- claves guardadas en el navegador (IndexedDB) ---------- */
+  function idb(mode, fn) {
+    return new Promise(function (resolve) {
+      try {
+        var r = indexedDB.open('consentia-agenda', 1);
+        r.onupgradeneeded = function () { r.result.createObjectStore('claves'); };
+        r.onerror = function () { resolve(null); };
+        r.onsuccess = function () {
+          var db = r.result, out = null;
+          try { var tx = db.transaction('claves', mode); out = fn(tx.objectStore('claves')); tx.oncomplete = function () { db.close(); resolve(out); }; tx.onerror = tx.onabort = function () { db.close(); resolve(null); }; }
+          catch (e) { db.close(); resolve(null); }
+        };
+      } catch (e) { resolve(null); }
+    });
+  }
+  function loadKeys() {
+    return idb('readonly', function (os) { var out = {}; var c = os.openCursor(); c.onsuccess = function () { var cur = c.result; if (cur) { if (cur.value && cur.value.type === 'secret') out[cur.key] = cur.value; cur.continue(); } }; return out; });
+  }
+  function saveKey(id, key) { if (st.remember) idb('readwrite', function (os) { os.put(key, id); }); }
+  function clearKeys() { return idb('readwrite', function (os) { os.clear(); }); }
+
+  function el(tag, attrs, kids) { var e = document.createElement(tag); if (attrs) Object.keys(attrs).forEach(function (k) { if (k === 'text') e.textContent = attrs[k]; else if (k === 'on') Object.keys(attrs.on).forEach(function (ev) { e.addEventListener(ev, attrs.on[ev]); }); else if (k === 'style') e.setAttribute('style', attrs[k]); else e.setAttribute(k, attrs[k]); }); (kids || []).forEach(function (c) { if (c) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); }); return e; }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function today() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function addDays(k, n) { var p = k.split('-'); var d = new Date(+p[0], +p[1] - 1, +p[2] + n); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function longDay(k) { var p = String(k).split('-'); var d = new Date(+p[0], +p[1] - 1, +p[2]); var t = d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); return t.charAt(0).toUpperCase() + t.slice(1); }
+  function ago(iso) { var m = Math.round((Date.now() - Date.parse(iso)) / 60000); if (!(m >= 0)) return ''; if (m < 1) return 'ahora mismo'; if (m < 60) return 'hace ' + m + ' min'; var h = Math.floor(m / 60); if (h < 48) return 'hace ' + h + ' h'; return 'hace ' + Math.floor(h / 24) + ' días'; }
+  function b64(s) { var bin = atob(s), u = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; }
+  function color(c) { return /^#[0-9a-f]{6}$/i.test(String(c || '')) ? c : '#999999'; }
+  function txt(v, n) { return String(v == null ? '' : v).slice(0, n || 200); }
+
+  function kdfOf(file) {
+    if (!file || file.format !== FORMAT || !file.kdf || file.kdf.alg !== 'PBKDF2-SHA256' || typeof file.kdf.salt !== 'string') throw new Error('formato');
+    var iter = +file.kdf.iter; if (!(iter >= MIN_ITER && iter <= MAX_ITER)) throw new Error('formato');
+    return { id: file.kdf.salt + '|' + iter, salt: file.kdf.salt, iter: iter };
+  }
+  async function deriveKey(pw, k) {
+    var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(String(pw).normalize('NFC')), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(k.salt), iterations: k.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  }
+  async function decryptWith(file, key) {
+    var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(file.iv), additionalData: new TextEncoder().encode(FORMAT + ':' + file.id) }, key, b64(file.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+  // Abre un archivo con una clave ya conocida o con alguna de las contraseñas escritas.
+  async function openFile(file) {
+    var k; try { k = kdfOf(file); } catch (e) { return null; }
+    if (st.keys[k.id]) { try { return await decryptWith(file, st.keys[k.id]); } catch (e) { } }
+    for (var i = 0; i < st.pws.length; i++) {
+      try { var key = await deriveKey(st.pws[i], k); var data = await decryptWith(file, key); st.keys[k.id] = key; saveKey(k.id, key); return data; } catch (e) { }
+    }
+    return null;
+  }
+  async function getJson(url) { var r = await fetch(url, { cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer' }); if (r.status === 404) return null; if (!r.ok) { var e = new Error('http ' + r.status); e.status = r.status; throw e; } return r.json(); }
+
+  // Agendas publicadas (una rama «agenda-…» por centro): la lista, por la API de GitHub (al momento). Si GitHub
+  // limita las consultas (muchas seguidas desde la misma conexión), se leen las ramas ya conocidas de
+  // raw.githubusercontent.com, que puede ir unos minutos por detrás.
+  function knownBranches() { try { return JSON.parse(localStorage.getItem(LS_BR) || '[]').filter(function (b) { return BR_RE.test(b); }); } catch (e) { return []; } }
+  async function listing() {
+    try {
+      var refs = await getJson(cfg.api + '/repos/' + cfg.repo + '/git/matching-refs/heads/agenda-');
+      var items = (refs || []).map(function (r) { return { key: String(r.ref).replace('refs/heads/', ''), sha: r.object && r.object.sha }; }).filter(function (x) { return BR_RE.test(x.key) && SHA_RE.test(x.sha || ''); });
+      st.branches = items.map(function (x) { return x.key; });
+      if (st.remember) { try { localStorage.setItem(LS_BR, JSON.stringify(st.branches)); } catch (e) { } }
+      return { items: items.map(function (x) { return { key: x.key, sha: x.sha, url: cfg.raw + '/' + cfg.repo + '/' + x.sha + '/agenda.json' }; }) };
+    } catch (e) {
+      if (!(e.status === 403 || e.status === 429)) throw e;
+      var names = st.branches.length ? st.branches : knownBranches();
+      if (!names.length) { var err = new Error('limite'); err.limit = true; throw err; }
+      return { cached: true, items: names.map(function (b) { return { key: b, sha: null, url: cfg.raw + '/' + cfg.repo + '/' + b + '/agenda.json' }; }) };
+    }
+  }
+
+  async function refresh() {
+    if (!cfg.repo) { st.msg = 'No se sabe de qué repositorio es esta agenda.'; st.ready = true; return render(); }
+    st.loading = true; render();
+    try {
+      var l = await listing(), prev = {}, out = [];
+      st.lastCheck = new Date().toISOString();
+      st.centers.forEach(function (c) { prev[c.key] = c; });
+      for (var i = 0; i < l.items.length; i++) {
+        var it = l.items[i], p = prev[it.key], f = p && it.sha && p.sha === it.sha ? p.file : await getJson(it.url);
+        if (!f || 'agenda-' + f.id !== it.key) continue; // cada archivo, solo en la rama de su centro
+        out.push({ key: it.key, sha: it.sha, file: f, data: p && p.file === f && p.data ? p.data : await openFile(f) });
+      }
+      out.sort(function (a, b) { return a.data && b.data ? txt(a.data.center.l || a.data.center.n).localeCompare(txt(b.data.center.l || b.data.center.n)) : a.data ? -1 : b.data ? 1 : 0; });
+      if (!st.pws.length && out.length && !out.some(function (c) { return c.data; })) st.bad = 'La contraseña de la agenda ha cambiado: escríbela otra vez.';
+      var was = st.centers[st.cur] && st.centers[st.cur].key;
+      var at = out.findIndex(function (c) { return c.key === was; });
+      if (at < 0 || !out[at].data) at = Math.max(0, out.findIndex(function (c) { return c.data; })); // se queda en el centro que se estaba viendo
+      st.centers = out; st.cached = !!l.cached; st.cur = at;
+      st.msg = out.length ? '' : 'Todavía no hay ninguna agenda publicada. Se publica desde el programa: Ajustes → Agenda en el móvil.';
+    } catch (e) {
+      st.msg = e.limit ? 'GitHub limita las consultas seguidas desde esta conexión. Espera unos minutos y vuelve a intentarlo.' : 'No se ha podido descargar la agenda (¿hay Internet?). Se volverá a intentar.';
+    }
+    st.loading = false; st.ready = true; render();
+  }
+
+  async function login(pw, remember) {
+    pw = String(pw || ''); if (!pw) return;
+    st.bad = '';
+    if (remember) st.remember = true;
+    if (st.pws.indexOf(pw) < 0) st.pws.push(pw);
+    await refresh();
+    if (st.centers.length && !st.centers.some(function (c) { return c.data; })) { st.pws = st.pws.filter(function (x) { return x !== pw; }); st.bad = 'Contraseña incorrecta.'; render(); }
+  }
+  async function logout() { st.pws = []; st.keys = {}; st.remember = false; st.centers = []; st.branches = []; try { localStorage.removeItem(LS_BR); } catch (e) { } await clearKeys(); render(); }
+
+  function render() {
+    app.innerHTML = '';
+    var opened = st.centers.filter(function (c) { return c.data; });
+    var creds = st.pws.length || Object.keys(st.keys).length;
+    if (creds && !st.ready) { app.appendChild(el('div', { class: 'login' }, [el('h1', { text: 'Consentía Studio' }), el('p', { text: 'Abriendo la agenda…' })])); return; }
+    if (!creds || (!opened.length && st.centers.length && !st.loading)) {
+      var inp = el('input', { type: 'password', autocomplete: 'current-password', placeholder: 'Contraseña de la agenda', id: 'pw' });
+      var rem = el('input', { type: 'checkbox', id: 'rem' });
+      var btn = el('button', { text: st.loading ? 'Abriendo…' : 'Ver la agenda' });
+      if (st.loading) btn.setAttribute('disabled', '');
+      var go = function () { login(inp.value, rem.checked); };
+      btn.addEventListener('click', go); inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
+      app.appendChild(el('div', { class: 'login' }, [el('h1', { text: 'Consentía Studio' }), el('p', { text: 'Agenda de los centros. Escribe la contraseña de la agenda: se descifra aquí, en este móvil, y no se envía a ningún sitio.' }), inp,
+        el('label', {}, [rem, 'Recordar en este móvil (quien lo use verá la agenda)']), btn, st.bad ? el('div', { class: 'bad', text: st.bad }) : null, st.msg ? el('div', { class: 'warn', text: st.msg }) : null]));
+      setTimeout(function () { inp.focus(); }, 50);
+      return;
+    }
+    var c = st.centers[st.cur] || st.centers[0];
+    var head = el('header', {}, [el('div', { class: 't' }, [el('b', { text: 'Agenda · Consentía Studio' }), el('span', {}, [el('button', { text: '↻', title: 'Actualizar', on: { click: function () { refresh(); } } }), ' ', el('button', { text: 'Salir', on: { click: logout } })])])]);
+    if (st.centers.length > 1) head.appendChild(el('div', { class: 'tabs' }, st.centers.map(function (x, i) { return el('button', { class: i === st.cur ? 'on' : '', text: x.data ? txt(x.data.center.l || x.data.center.n, 40) : 'Centro bloqueado', on: { click: function () { st.cur = i; render(); } } }); })));
+    app.appendChild(head);
+    app.appendChild(el('div', { class: 'days' }, [el('button', { text: '‹', title: 'Día anterior', on: { click: function () { st.day = addDays(st.day, -1); render(); } } }), el('div', { class: 'd', text: longDay(st.day) }), el('button', { text: '›', title: 'Día siguiente', on: { click: function () { st.day = addDays(st.day, 1); render(); } } }), st.day !== today() ? el('button', { class: 'hoy', text: 'Hoy', on: { click: function () { st.day = today(); render(); } } }) : null]));
+    var main = el('main');
+    if (st.msg) main.appendChild(el('div', { class: 'warn', text: st.msg }));
+    if (!c) { main.appendChild(el('div', { class: 'none', text: st.loading ? 'Cargando…' : 'No hay agendas publicadas.' })); app.appendChild(main); return; }
+    if (!c.data) {
+      var oi = el('input', { type: 'password', placeholder: 'Contraseña de este centro' });
+      main.appendChild(el('div', { class: 'warn' }, ['Esta agenda tiene otra contraseña (o se ha cambiado).', el('div', { class: 'other' }, [oi, el('button', { text: 'Abrir', on: { click: function () { login(oi.value, st.remember); } } })])]));
+      app.appendChild(main); return;
+    }
+    var d = c.data, day = st.day;
+    var old = (Date.now() - Date.parse(d.at)) / 60000;
+    if (old > 75) main.appendChild(el('div', { class: 'warn', text: 'Esta agenda se publicó ' + ago(d.at) + '. Si el ordenador del centro está apagado o sin Internet, los últimos cambios no aparecen.' }));
+    if (day < d.from || day > d.to) main.appendChild(el('div', { class: 'warn', text: 'Ese día está fuera de lo publicado (del ' + longDay(d.from) + ' al ' + longDay(d.to) + ').' }));
+    var emps = (d.employees || []).map(function (e) { return { id: e.id, n: txt(e.n, 40), c: color(e.c) }; });
+    var known = {}; emps.forEach(function (e) { known[e.id] = true; });
+    var list = (d.appts || []).filter(function (a) { return a.d === day; });
+    if (list.some(function (a) { return !a.emp || !known[a.emp]; })) emps.push({ id: '__sin', n: 'Sin asignar', c: '#999999' });
+    var blocks = (d.blocks || []).filter(function (b) { return String(b.from).slice(0, 10) <= day && String(b.to).slice(0, 10) >= day; });
+    var any = false;
+    emps.forEach(function (e) {
+      var mine = list.filter(function (a) { return e.id === '__sin' ? !a.emp || !known[a.emp] : a.emp === e.id; });
+      var bl = e.id === '__sin' ? [] : blocks.filter(function (b) { return !b.emp || b.emp === e.id; });
+      if (!mine.length && !bl.length) return; any = true;
+      var items = [];
+      bl.forEach(function (b) { var s = String(b.from).slice(0, 10) < day || b.all ? '' : String(b.from).slice(11, 16), t = String(b.to).slice(0, 10) > day || b.all ? '' : String(b.to).slice(11, 16); items.push({ k: s || '00:00', node: el('div', { class: 'it blk' }, [el('div', { class: 'h', text: s && t ? s + '–' + t : 'Todo el día' }), el('div', { class: 'w' }, [el('b', { text: txt(b.r, 60) })])]) }); });
+      mine.forEach(function (a) {
+        var tag = a.st === 'c' ? el('span', { class: 'tag c', text: 'Cobrada' }) : a.st === 'h' ? el('span', { class: 'tag c', text: 'Hecha' }) : a.st === 'x' ? el('span', { class: 'tag x', text: 'Cancelada' }) : a.st === 'n' ? el('span', { class: 'tag n', text: 'No vino' }) : null;
+        items.push({ k: txt(a.s, 5), node: el('div', { class: 'it' + (a.st === 'x' || a.st === 'n' ? ' x' : ''), style: '--c:' + e.c }, [el('div', { class: 'h', text: txt(a.s, 5) + '–' + txt(a.e, 5) }), el('div', { class: 'w' }, [el('b', {}, [txt(a.c, 80) || 'Sin clienta', tag]), el('small', { text: txt(a.sv, 200) })])]) });
+      });
+      items.sort(function (x, y) { return x.k < y.k ? -1 : x.k > y.k ? 1 : 0; });
+      main.appendChild(el('section', { class: 'emp' }, [el('h3', {}, [el('span', { class: 'dot', style: 'background:' + e.c }), e.n])].concat(items.map(function (i) { return i.node; }))));
+    });
+    if (!any) main.appendChild(el('div', { class: 'none', text: 'No hay citas este día.' }));
+    main.appendChild(el('div', { class: 'note', text: (d.center.l ? txt(d.center.l, 80) + ' · ' : '') + 'publicado ' + ago(d.at) + (st.cached ? ' · copia de GitHub (puede ir unos minutos por detrás)' : '') + (st.loading ? ' · actualizando…' : '') }));
+    app.appendChild(main);
+    var hh = app.querySelector('header'); if (hh) document.documentElement.style.setProperty('--hh', hh.offsetHeight + 'px');
+  }
+
+  render();
+  loadKeys().then(function (k) {
+    st.keys = k || {}; st.remember = Object.keys(st.keys).length > 0;
+    if (st.remember) refresh(); else { st.ready = true; render(); }
+  });
+  setInterval(function () { if ((st.pws.length || Object.keys(st.keys).length) && !document.hidden) refresh(); }, 5 * 60 * 1000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && (st.pws.length || Object.keys(st.keys).length) && (!st.lastCheck || Date.now() - Date.parse(st.lastCheck) > 60000)) refresh(); });
+})();
+</script>
+</body>
+</html>
